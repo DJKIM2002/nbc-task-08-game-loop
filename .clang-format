@@ -1,0 +1,16 @@
+Language: Cpp
+BasedOnStyle: WebKit
+IndentWidth: 4
+TabWidth: 4
+UseTab: Always
+SortIncludes: false
+BreakBeforeBraces: Allman
+IndentFunctionDeclarationAfterType: true
+IndentAccessModifiers: false
+PointerAlignment: Left
+AccessModifierOffset: -4
+ColumnLimit: 0
+FixNamespaceComments: true
+Cpp11BracedListStyle: false
+IndentCaseLabels: true
+AlignTrailingComments: true
