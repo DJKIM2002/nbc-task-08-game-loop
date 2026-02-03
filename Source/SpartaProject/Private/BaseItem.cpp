@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BaseItem.h"
 #include "Components/SphereComponent.h"
@@ -57,9 +57,16 @@ void ABaseItem::ActivateItem(AActor* Activator)
 			GetActorLocation(),
 			GetActorRotation(),
 			true);
+		
+		// 파티클이 2초 후 자동으로 비활성화되도록 설정
+		if (Particle)
+		{
+			Particle->bAutoDestroy = true;
+			Particle->CustomTimeDilation = 2.0f;
+		}
 	}
 
-  if (PickupSound)
+	if (PickupSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(
 			GetWorld(),
@@ -78,6 +85,7 @@ void ABaseItem::ActivateItem(AActor* Activator)
 			{
 				if (WeakParticle.IsValid())
 				{
+					WeakParticle->Deactivate();
 					WeakParticle->DestroyComponent();
 				}
 			},
