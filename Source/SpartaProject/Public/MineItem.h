@@ -6,9 +6,6 @@
 #include "BaseItem.h"
 #include "MineItem.generated.h"
 
-/**
- *
- */
 UCLASS()
 class SPARTAPROJECT_API AMineItem : public ABaseItem
 {
@@ -20,6 +17,10 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
 	TObjectPtr<USphereComponent> ExplosionCollision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+	TObjectPtr<UParticleSystem> ExplosionParticle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+	TObjectPtr<USoundBase> ExplosionSound;
 
 	// 폭발까지 걸리는 시간
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mine")
@@ -34,6 +35,7 @@ protected:
 	int32 ExplosionDamage;
 
 	// 지뢰 발동 여부
+	bool bHasExploded;
 	FTimerHandle ExplosionTimerHandle;
 
 	virtual void ActivateItem(AActor* Activator) override;

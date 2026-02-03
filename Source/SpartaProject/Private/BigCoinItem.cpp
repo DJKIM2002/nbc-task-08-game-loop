@@ -2,7 +2,6 @@
 
 #include "BigCoinItem.h"
 
-// Sets default values
 ABigCoinItem::ABigCoinItem()
 {
 	PointValue = 50;

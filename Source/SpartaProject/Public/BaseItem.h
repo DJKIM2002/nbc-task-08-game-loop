@@ -31,6 +31,10 @@ protected:
 	// 아이템 시각 표현용 스태틱 메시
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
 	TObjectPtr<UStaticMeshComponent> StaticMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+	TObjectPtr<UParticleSystem> PickupParticle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+	TObjectPtr<USoundBase> PickupSound;
 
 	virtual void OnItemOverlap(
 		UPrimitiveComponent* OverlappedComp,

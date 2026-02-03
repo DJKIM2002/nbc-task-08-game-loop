@@ -38,7 +38,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD")
 	TObjectPtr<UUserWidget> HUDWidgetInstance;
 
-  // 메뉴 UI
+	// 메뉴 UI
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu")
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Menu")
@@ -47,7 +47,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "HUD")
 	UUserWidget* GetHUDWidget() const;
 
-  // HUD 표시
+	// HUD 표시
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void ShowGameHUD();
 	// 메인 메뉴 표시
