@@ -336,7 +336,7 @@ void ASpartaGameState::UpdateHUD()
 
 				if (UTextBlock* LevelIndexText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("Level"))))
 				{
-					LevelIndexText->SetText(FText::FromString(FString::Printf(TEXT("Level: %d - Wave: %d"), 
+					LevelIndexText->SetText(FText::FromString(FString::Printf(TEXT("Level %d - Wave %d"), 
 						CurrentLevelIndex + 1, CurrentWaveIndex + 1)));
 				}
 			}
