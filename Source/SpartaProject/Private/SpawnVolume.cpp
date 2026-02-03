@@ -15,6 +15,25 @@ ASpawnVolume::ASpawnVolume()
 
 	SpawningBox = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawningBox"));
 	SpawningBox->SetupAttachment(Scene);
+
+	CurrentItemDataTable = nullptr;
+}
+
+void ASpawnVolume::SetCurrentDataTableIndex(int32 LevelIndex, int32 WaveIndex)
+{
+	// 인덱스 계산: (레벨 인덱스 * 3) + 웨이브 인덱스
+	int32 TableIndex = (LevelIndex * 3) + WaveIndex;
+
+	if (ItemDataTables.IsValidIndex(TableIndex))
+	{
+		CurrentItemDataTable = ItemDataTables[TableIndex];
+		UE_LOG(LogTemp, Warning, TEXT("[SpawnVolume] DataTable changed to index %d (Level %d, Wave %d)"), 
+			TableIndex, LevelIndex + 1, WaveIndex + 1);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[SpawnVolume] Invalid DataTable index: %d"), TableIndex);
+	}
 }
 
 AActor* ASpawnVolume::SpawnRandomItem()
@@ -64,13 +83,17 @@ FVector ASpawnVolume::GetRandomPointInVolume() const
 
 FItemSpawnRow* ASpawnVolume::GetRandomItem() const
 {
-	if (!ItemDataTable)
+	// 현재 설정된 DataTable 사용
+	if (!CurrentItemDataTable)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[SpawnVolume] CurrentItemDataTable is NULL!"));
 		return nullptr;
+	}
 
 	// 모든 Row 가져오기
 	TArray<FItemSpawnRow*> AllRows;
 	static const FString ContextString(TEXT("ItemSpawnContext"));
-	ItemDataTable->GetAllRows(ContextString, AllRows);
+	CurrentItemDataTable->GetAllRows(ContextString, AllRows);
 
 	if (AllRows.IsEmpty())
 		return nullptr;

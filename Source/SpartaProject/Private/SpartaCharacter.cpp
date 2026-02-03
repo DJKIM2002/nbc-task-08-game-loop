@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SpartaCharacter.h"
 #include "Camera/CameraComponent.h"
@@ -37,7 +37,7 @@ ASpartaCharacter::ASpartaCharacter()
 
 	GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
 
-	MaxHealth = 100.f;
+	MaxHealth = 50.f;
 	Health = MaxHealth;
 }
 
