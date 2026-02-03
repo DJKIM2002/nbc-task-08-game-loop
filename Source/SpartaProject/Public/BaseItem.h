@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -16,6 +16,8 @@ class SPARTAPROJECT_API ABaseItem : public AActor, public IItemInterface
 
 public:
 	ABaseItem();
+
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// 아이템 유형(타입)을 편집 가능하게 지정
@@ -35,6 +37,10 @@ protected:
 	TObjectPtr<UParticleSystem> PickupParticle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
 	TObjectPtr<USoundBase> PickupSound;
+
+	// 회전 속도 (초당 회전 각도)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Rotation")
+	float RotationSpeed;
 
 	virtual void OnItemOverlap(
 		UPrimitiveComponent* OverlappedComp,

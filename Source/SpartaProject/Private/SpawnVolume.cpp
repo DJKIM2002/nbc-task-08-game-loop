@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SpawnVolume.h"
 #include "Components/BoxComponent.h"
@@ -37,7 +37,29 @@ FVector ASpawnVolume::GetRandomPointInVolume() const
 	FVector BoxOrigin = SpawningBox->GetComponentLocation();
 
 	// 각 축별로 -Extent ~ +Extent 범위 내에서 무작위 좌표를 생성
-	return BoxOrigin + FVector(FMath::FRandRange(-BoxExtent.X, BoxExtent.X), FMath::FRandRange(-BoxExtent.Y, BoxExtent.Y), FMath::FRandRange(-BoxExtent.Z, BoxExtent.Z));
+	FVector RandomPoint = BoxOrigin + FVector(
+		FMath::FRandRange(-BoxExtent.X, BoxExtent.X),
+		FMath::FRandRange(-BoxExtent.Y, BoxExtent.Y),
+		FMath::FRandRange(-BoxExtent.Z, BoxExtent.Z)
+	);
+
+	// 바닥 감지를 위한 LineTrace
+	FHitResult HitResult;
+	FVector TraceStart = RandomPoint + FVector(0.f, 0.f, 500.f);
+	FVector TraceEnd = RandomPoint - FVector(0.f, 0.f, 1000.f);
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	// 바닥 찾기
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+	{
+		// 바닥 위 50 유닛 높이에 스폰
+		return HitResult.Location + FVector(0.f, 0.f, 50.f);
+	}
+
+	// 바닥을 찾지 못한 경우 원래 위치 반환
+	return RandomPoint;
 }
 
 FItemSpawnRow* ASpawnVolume::GetRandomItem() const
@@ -81,9 +103,11 @@ AActor* ASpawnVolume::SpawnItem(TSubclassOf<AActor> ItemClass)
 {
 	if (!ItemClass)
 		return nullptr;
+
 	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(
 		ItemClass,
 		GetRandomPointInVolume(),
 		FRotator::ZeroRotator);
+
 	return SpawnedActor;
 }

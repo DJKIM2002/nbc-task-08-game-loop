@@ -4,10 +4,11 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Components/AudioComponent.h"
 
 ABaseItem::ABaseItem()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// 루트 컴포넌트 생성 및 설정
 	Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
@@ -29,6 +30,19 @@ ABaseItem::ABaseItem()
 	// Overlap 이벤트 바인딩
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &ABaseItem::OnItemOverlap);
 	Collision->OnComponentEndOverlap.AddDynamic(this, &ABaseItem::OnItemEndOverlap);
+
+	// 기본 회전 속도 (초당 90도)
+	RotationSpeed = 90.f;
+}
+
+void ABaseItem::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// Y축(Yaw)을 기준으로 회전
+	FRotator NewRotation = GetActorRotation();
+	NewRotation.Yaw += RotationSpeed * DeltaTime;
+	SetActorRotation(NewRotation);
 }
 
 void ABaseItem::OnItemOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -48,6 +62,7 @@ void ABaseItem::OnItemEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
 void ABaseItem::ActivateItem(AActor* Activator)
 {
 	UParticleSystemComponent* Particle = nullptr;
+	UAudioComponent* AudioComp = nullptr;
 
 	if (PickupParticle)
 	{
@@ -68,12 +83,13 @@ void ABaseItem::ActivateItem(AActor* Activator)
 
 	if (PickupSound)
 	{
-		UGameplayStatics::PlaySoundAtLocation(
+		AudioComp = UGameplayStatics::SpawnSoundAtLocation(
 			GetWorld(),
 			PickupSound,
 			GetActorLocation());
 	}
 
+	// 파티클 타이머
 	if (Particle)
 	{
 		FTimerHandle DestroyParticleTimerHandle;
@@ -87,6 +103,26 @@ void ABaseItem::ActivateItem(AActor* Activator)
 				{
 					WeakParticle->Deactivate();
 					WeakParticle->DestroyComponent();
+				}
+			},
+			2.0f,
+			false);
+	}
+
+	// 사운드 타이머
+	if (AudioComp)
+	{
+		FTimerHandle StopSoundTimerHandle;
+		TWeakObjectPtr<UAudioComponent> WeakAudio = AudioComp;
+
+		GetWorld()->GetTimerManager().SetTimer(
+			StopSoundTimerHandle,
+			[WeakAudio]()
+			{
+				if (WeakAudio.IsValid())
+				{
+					WeakAudio->Stop();
+					WeakAudio->DestroyComponent();
 				}
 			},
 			2.0f,

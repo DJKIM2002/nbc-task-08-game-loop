@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MineItem.h"
 #include "Components/SphereComponent.h"
@@ -7,7 +7,7 @@
 
 AMineItem::AMineItem()
 {
-	ExplosionDelay = 5.f;
+	ExplosionDelay = 2.f;
 	ExplosionRadius = 300.f;
 	ExplosionDamage = 30;
 	ItemType = "Mine";
